@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f;
+    public Transform focusPoint;
 
     private Rigidbody rb;
 
@@ -21,10 +22,25 @@ public class PlayerController : MonoBehaviour
         smashAction = InputSystem.actions.FindAction("Smash");
         breakAction = InputSystem.actions.FindAction("Break");
     }
-
+    private void Start()
+    {
+        StartCoroutine(HelloRoutine());
+    }
     // Update is called once per frame
     void Update()
     {
+        var move = moveAction.ReadValue<Vector2>();
+        rb.AddForce(move.y * speed * focusPoint.forward);
+        if (breakAction.IsPressed())
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+    }
 
+    IEnumerator HelloRoutine()
+    {
+        Debug.Log("Hello" + Time.frameCount);
+        yield return null;
+        Debug.Log("Hello" + Time.frameCount);
     }
 }
