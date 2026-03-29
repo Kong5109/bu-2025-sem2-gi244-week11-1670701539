@@ -61,6 +61,10 @@ public class PlayerController : MonoBehaviour
 
             StartCoroutine(PowerUpIndicatorRoutine());
         }
+        else if (other.CompareTag("PowerUpStun"))
+        {
+            Destroy(other.gameObject);
+        }
     }
     
 
