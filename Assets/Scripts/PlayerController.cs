@@ -5,13 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f;
-
+    public Transform focusPoint;
     private Rigidbody rb;
 
     private InputAction moveAction;
     private InputAction smashAction;
     private InputAction breakAction;
 
+    public bool hasPowerUp = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -25,6 +26,42 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var move = moveAction.ReadValue<Vector2>();
+        rb.AddForce(move.y * speed * focusPoint.forward);
+        if (breakAction.IsPressed())
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+    }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            if (hasPowerUp == true)
+            {
+                var rb = collision.gameObject.GetComponent<Rigidbody>();
+                var dir = collision.transform.position - transform.position;
+
+                rb.AddForce(50 * dir.normalized, ForceMode.Impulse);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PowerUp"))
+        {
+            hasPowerUp = true;
+            Destroy(other.gameObject);
+            StartCoroutine(PowerUpCountDown());
+        }
+    }
+    
+
+    IEnumerator PowerUpCountDown()
+    {
+        yield return new WaitForSeconds(10f);
+        hasPowerUp = false;
     }
 }
