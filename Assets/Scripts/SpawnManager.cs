@@ -5,6 +5,8 @@ public class SpawnManager : MonoBehaviour
 {
     public Transform[] spawnPoints;
     public GameObject enemyPrefab;
+    public float startSpawnDelay = 5f;
+    public float spawnDelay = 3f;
 
     void Start()
     {
@@ -14,11 +16,11 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnRoutine()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(startSpawnDelay);
         while (true)
         {
             RandomSpawn();
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(spawnDelay);
         }
     }
 
