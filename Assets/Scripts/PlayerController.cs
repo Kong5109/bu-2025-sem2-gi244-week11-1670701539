@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public bool hasPowerUp = false;
 
+    public GameObject powerUpIndicator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -21,6 +22,8 @@ public class PlayerController : MonoBehaviour
         moveAction = InputSystem.actions.FindAction("Move");
         smashAction = InputSystem.actions.FindAction("Smash");
         breakAction = InputSystem.actions.FindAction("Break");
+
+        powerUpIndicator.SetActive(hasPowerUp);
     }
 
     // Update is called once per frame
@@ -55,6 +58,8 @@ public class PlayerController : MonoBehaviour
             hasPowerUp = true;
             Destroy(other.gameObject);
             StartCoroutine(PowerUpCountDown());
+
+            StartCoroutine(PowerUpIndicatorRoutine());
         }
     }
     
@@ -63,5 +68,16 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(10f);
         hasPowerUp = false;
+    }
+
+    IEnumerator PowerUpIndicatorRoutine()
+    {
+        powerUpIndicator.SetActive(true);
+        while (hasPowerUp)
+        {
+            powerUpIndicator.transform.position = transform.position;
+            yield return null;
+        }
+        powerUpIndicator.SetActive(false);
     }
 }
